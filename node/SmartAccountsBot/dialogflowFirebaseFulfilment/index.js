@@ -65,8 +65,6 @@ async function findGoogler(agent) {
   const skill = agent.parameters.skill;
   const sheets = await getSheetsClient();
 
-  console.log(`Looking up: ${role} ${account} ${skill}`);
-
   await lookupContact(agent, sheets, account, skill, role);
 }
 
@@ -84,7 +82,6 @@ async function lookupContact(agent, sheets, account, skill, role) {
   let errorMessage = '';
   let cardJSON = {};
   const cluster = await getCluster(sheets, account);
-  console.log(`Cluster: ${cluster}`);
 
   if (cluster === '') {
     errorMessage = `Cluster not found.`;
@@ -104,7 +101,6 @@ async function lookupContact(agent, sheets, account, skill, role) {
   const contact = await getContactName(sheets, cluster, role, skillIndex);
 
   if (contact !== '') {
-    console.log(`found: ${contact}`);
     agent.add(`Please contact: ${contact}`);
     cardJSON = await cardBuilder.createContactCard(sheets, contact, cluster, account,
         role, skill);
@@ -141,10 +137,8 @@ function addHangoutsCustomPayload(agent, cardJSON) {
  * @return {String} The cluster name.
  */
 async function getCluster(sheets, account) {
-  console.log('in get cluster');
   // eslint-disable-next-line guard-for-in
   for (const [clusterKey, range] of Object.entries(CLUSTER_RANGES)) {
-    console.log(`looking in clusterKey: ${clusterKey}`);
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: ACCOUNTS_SHEET_ID,
       range,
@@ -157,7 +151,6 @@ async function getCluster(sheets, account) {
         return clusterKey;
       }
     }
-    console.log(`cluster values: ${JSON.stringify(values)}`);
   }
   return '';
 }

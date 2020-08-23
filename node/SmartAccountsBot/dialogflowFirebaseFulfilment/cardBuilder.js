@@ -1,34 +1,26 @@
 const ACCOUNT_IMAGE_URL = 'https://www.gstatic.com/images/icons/material/system_gm/1x/account_circle_black_18dp.png';
 const ACCOUNTS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1HBcfIJMv7xhucMnAFrrXzjmRvbwz1iVpc-rfb26RAFg/edit';
 const ACCOUNTS_SHEET_ID = '1HBcfIJMv7xhucMnAFrrXzjmRvbwz1iVpc-rfb26RAFg';
+const MAPS_IMAGE_BASE_URL = 'https://maps.googleapis.com/maps/api/staticmap?';
 const API_KEY = 'YOUR_API_KEY';
 
-// TODO: make this a map
-const AMS_IMAGE_URL = 'https://maps.googleapis.com/maps/api/staticmap?center=Claude%20Debussylaan%2034,%201082%20MD%20Amsterdam,%20Netherlands&zoom=14&size=400x400&key=' + API_KEY;
-const MTV_IMAGE_URL = 'https://maps.googleapis.com/maps/api/staticmap?center=Googleplex&zoom=14&size=200x200&key=' + API_KEY;
-const SFO_IMAGE_URL = 'https://maps.googleapis.com/maps/api/staticmap?center=345%20Spear%20Street,%20San%20Francisco,%20CA&zoom=14&size=200x200&key=' + API_KEY;
-const LON_IMAGE_URL = 'https://maps.googleapis.com/maps/api/staticmap?center=https://maps.googleapis.com/maps/api/staticmap?center=6%20Pancras%20Square,%20Kings%20Cross,%20London%20N1C%204AG,%20UK&zoom=14&size=200x200&key=' + API_KEY;
-const NYC_IMAGE_URL = 'https://maps.googleapis.com/maps/api/staticmap?center=111%208th%20Ave,%20New%20York,%20NY%2010011&zoom=14&size=200x200&key=AIzaSyDcsevYCzekvFi6HygkEW2YeojxjW8prH4&zoom=14&size=200x200&key=' + API_KEY;
+const LOCATION_VARS = {
+  'AMS' : 'center=Claude%20Debussylaan%2034,%201082%20MD%20Amsterdam,%20Netherlands&zoom=14&size=400x400',
+  'MTV' : 'center=Googleplex&zoom=14&size=200x200',
+  'SFO' : 'center=345%20Spear%20Street,%20San%20Francisco,%20CA&zoom=14&size=200x200',
+  'LON' : 'center=6%20Pancras%20Square,%20Kings%20Cross,%20London%20N1C%204AG,%20UK&zoom=14&size=200x200',
+  'NYC' : 'center=111%208th%20Ave,%20New%20York,%20NY%2010011&zoom=14&size=200x200'
+}
 
 const createContactCard = async (sheets, contact, cluster,
   account, role, skill) => {
-  console.log(`in createContactCard`);
   const contactRow = await getContactInfo(sheets, contact);
   const email = contactRow[1];
   const location = contactRow[2];
-  console.log(`location ${location}`);
-  let mapsImageURL = MTV_IMAGE_URL;
 
-  if (location == 'AMS') {
-    mapsImageURL = AMS_IMAGE_URL;
-  } else if (location == 'NYC') {
-    mapsImageURL = NYC_IMAGE_URL;
-  } else if (location == 'SFO') {
-    mapsImageURL = SFO_IMAGE_URL;
-  } else if (location == 'LON') {
-    mapsImageURL = LON_IMAGE_URL;
-  }
-  // leave default as MTV.
+  // For production use, we recommend restricting and signing your API Key
+  // See: https://developers.google.com/maps/documentation/maps-static/get-api-key
+  const mapsImageURL = MAPS_IMAGE_BASE_URL + LOCATION_VARS[location] + '&key=' + API_KEY;
 
   const cardHeader = {
     title: account + ' ' + role + ' ' + 'Contact',
