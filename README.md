@@ -1,5 +1,5 @@
-# G Suite ML Integration Samples
+# Google Workspae ML Integration Samples
 
-Welcome to the G Suite ML Integrations samples repository. Here you 
+Welcome to the Google WOrkspace ML Integrations samples repository. Here you 
 will find a collection of code samples and utilities that integrate
-both G Suite APIs and Google Cloud AI/ML technologies. 
+both Google Workspace APIs and Google Cloud AI/ML technologies. 
