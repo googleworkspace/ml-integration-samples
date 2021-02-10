@@ -1,5 +1,5 @@
-# Google Workspae ML Integration Samples
+# Google Workspace ML Integration Samples
 
-Welcome to the Google WOrkspace ML Integrations samples repository. Here you 
+Welcome to the Google Workspace ML Integrations samples repository. Here you 
 will find a collection of code samples and utilities that integrate
 both Google Workspace APIs and Google Cloud AI/ML technologies. 
