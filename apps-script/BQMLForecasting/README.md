@@ -17,16 +17,15 @@ Your data must be formatted with 2 columns, the first containing the date and/or
 ## Getting started
 
 1. Load an existing Google Sheet, or add data to a new Google Sheet (as easy as typing [sheet.new](sheet.new) in your browser).
-2. Via **File > Settings**, change the Time zone to UTC: `(GMT+00:00) GMT (no daylight saving)`. Generally, time zone and daylight savings is handled by the script, but to avoid any unexpected issues, this is recommended.
-3. From your spreadsheet, choose **Extensions > Apps Script**.
-4. From the **Project Settings** in the left panel, check the box to "Show 'appsscript.json' manifest file in editor." 
-5. Paste in the contents of `code.gs` from this repo into the Apps Script project.
-6. Paste in the contents of `appsscript.json` from this repo into the Apps Script project.
+2. From your spreadsheet, choose **Extensions > Apps Script**.
+3. From the **Project Settings** in the left panel, check the box to "Show 'appsscript.json' manifest file in editor." 
+4. Paste in the contents of `code.gs` from this repo into the Apps Script project.
+5. Paste in the contents of `appsscript.json` from this repo into the Apps Script project.
 
 ![Apps script](images/appsscript.png)
 
-7. Save both files, and close the Apps Script window.
-8. The first time you train a model, it will prompt you for your GCP project ID. It will use a default BigQuery dataset ID of `sheets_forecast` that you can optionally override in the **BQML > Configure** menu.
+6. Save both files, and close the Apps Script window.
+7. The first time you train a model, it will prompt you for your GCP project ID. It will use a default BigQuery dataset ID of `sheets_forecast` that you can optionally override in the **BQML > Configure** menu.
 
 ## How it works
 
