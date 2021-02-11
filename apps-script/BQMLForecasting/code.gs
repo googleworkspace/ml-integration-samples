@@ -25,8 +25,6 @@ const DATASET_NAME = 'sheets_forecast';
 const TABLE_NAME = 'sheets_forecast_training_data';
 const MODEL_NAME = 'sheets_forecast_model';
 
-const TIMEZONE = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
-
 // =============================================================================
 // UI
 // =============================================================================
@@ -274,11 +272,11 @@ function forecast() {
   const forecasts = [];
   const integers = PropertiesService.getUserProperties().
     getProperty(INTEGER_PROPERTY);
-
+  const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
   for (const item of response) {
     // Extract forecast date and adjust for local time zone
     const utcDate = new Date(item.f[0].v);
-    const offset = Utilities.formatDate(utcDate, TIMEZONE, '\'GMT\'XXX');
+    const offset = Utilities.formatDate(utcDate, timezone, '\'GMT\'XXX');
     const formattedDate = Utilities.formatDate(utcDate,
       'UTC', 'EEE MMM d HH:mm:ss \'' + offset + '\' y');
     const date = new Date(formattedDate);
@@ -357,7 +355,8 @@ function formatInput(input) {
   if (input instanceof Date) {
     // Use local date, but shift to UTC to avoid any daylight savings issues.
     // When forecasting, the UTC date will be converted back to the local date.
-    return '\'' + Utilities.formatDate(input, TIMEZONE,
+    const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
+    return '\'' + Utilities.formatDate(input, timezone,
       'yyyy-MM-dd HH:mm:ss') + '\'';
   } else if (input instanceof String) {
     return '\'' + input + '\'';
