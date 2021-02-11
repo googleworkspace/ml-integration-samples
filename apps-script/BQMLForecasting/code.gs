@@ -25,8 +25,6 @@ const DATASET_NAME = 'sheets_forecast';
 const TABLE_NAME = 'sheets_forecast_training_data';
 const MODEL_NAME = 'sheets_forecast_model';
 
-const TIMEZONE = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
-
 // =============================================================================
 // UI
 // =============================================================================
@@ -128,7 +126,6 @@ function createDatasetIfNotExists() {
  * Create BigQuery table if it doesn't exist already
  */
 function createTableIfNotExists() {
-
   [projectId, datasetId] = getConfiguration();
 
   try {
@@ -202,11 +199,10 @@ function train() {
   runQuery(request, project);
 }
 
-/** 
+/**
  * Basic validation function that checks range size and first row contents
  */
 function isValidTrainingData(range) {
-
   if (range.getNumRows() < 2 || range.getNumColumns() != 2) {
     SpreadsheetApp.getUi().alert('Multiple rows, each with 2 columns ' +
       '(date/time and number), must be selected.');
@@ -276,12 +272,18 @@ function forecast() {
   const forecasts = [];
   const integers = PropertiesService.getUserProperties().
     getProperty(INTEGER_PROPERTY);
-
+  const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
   for (const item of response) {
     // Extract forecast date and adjust for local time zone
-    const date = new Date(item.f[0].v);
+    const utcDate = new Date(item.f[0].v);
+    const offset = Utilities.formatDate(utcDate, timezone, '\'GMT\'XXX');
+    const formattedDate = Utilities.formatDate(utcDate,
+      'UTC', 'EEE MMM d HH:mm:ss \'' + offset + '\' y');
+    const date = new Date(formattedDate);
 
-    const forecast = integers === "true" ? Math.round(item.f[1].v) : item.f[1].v;
+    // Round forecast if training data uses integers
+    const forecast = integers === 'true' ?
+      Math.round(item.f[1].v) : item.f[1].v;
 
     forecasts.push([date, forecast]);
   }
@@ -342,6 +344,7 @@ function getValuesStr(inputs) {
   }
   return values.join();
 }
+
 /**
  * Formats variables for use in SQL:
  * Dates are converted to strings.
@@ -350,9 +353,11 @@ function getValuesStr(inputs) {
  */
 function formatInput(input) {
   if (input instanceof Date) {
-    input = input.
-      toLocaleString('sv-SE', { timeZone: TIMEZONE }) + ' ' + TIMEZONE;
-    return '\'' + input + '\'';
+    // Use local date, but shift to UTC to avoid any daylight savings issues.
+    // When forecasting, the UTC date will be converted back to the local date.
+    const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
+    return '\'' + Utilities.formatDate(input, timezone,
+      'yyyy-MM-dd HH:mm:ss') + '\'';
   } else if (input instanceof String) {
     return '\'' + input + '\'';
   }
@@ -374,9 +379,6 @@ function getOptionsStr(modelOptions) {
  * Runs a BigQuery query and logs the results in a spreadsheet.
  */
 function runQuery(request, projectId) {
-  // Replace this value with the project ID listed in the Google
-  // Cloud Platform project.
-
   // @ts-ignore
   let queryResults = BigQuery.Jobs.query(request, projectId);
   const jobId = queryResults.jobReference.jobId;
