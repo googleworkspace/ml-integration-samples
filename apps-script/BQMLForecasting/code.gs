@@ -276,7 +276,8 @@ function forecast() {
   for (const item of response) {
     // Extract forecast date and adjust for local time zone
     const utcDate = new Date(item.f[0].v);
-    const offset = Utilities.formatDate(utcDate, timezone, '\'GMT\'XXX');
+    let offset = Utilities.formatDate(utcDate, timezone, 'XXX');
+    offset = offset === 'Z' ? 'GMT+00:00' : 'GMT' + offset;
     const formattedDate = Utilities.formatDate(utcDate,
       'UTC', 'EEE MMM d HH:mm:ss \'' + offset + '\' y');
     const date = new Date(formattedDate);
