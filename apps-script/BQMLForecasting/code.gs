@@ -359,7 +359,7 @@ function formatInput(input) {
     const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
     return '\'' + Utilities.formatDate(input, timezone,
       'yyyy-MM-dd HH:mm:ss') + '\'';
-  } else if (input instanceof String) {
+  } else if (input instanceof String || typeof input == 'string') {
     return '\'' + input + '\'';
   }
   return input;
